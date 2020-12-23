@@ -61,4 +61,18 @@ class ProductProvider
     }
     return null;
   }
+
+  /**
+   * Remove um produto (soft delete)
+   */
+  public function delete(int $id): ?Product
+  {
+    $product = Product::find($id);
+
+    if (!$product) return null;
+
+    $product->delete();
+
+    return $product;
+  }
 }

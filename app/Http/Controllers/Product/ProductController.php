@@ -101,13 +101,19 @@ class ProductController extends Controller
   }
 
   /**
-   * Remove the specified resource from storage.
+   * Remove um produto usando a estrategia de soft delete
    *
    * @param  int  $id
-   * @return \Illuminate\Http\Response
    */
   public function destroy($id)
   {
-    //
+    $product = $this->productProvider->delete($id);
+
+    if (!$product)   return Response::json([
+      'message' => 'Erro nos dados enviados',
+      'details' => 'Produto nao encontrado'
+    ], 404);
+
+    return Response::noContent(204);
   }
 }
