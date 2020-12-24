@@ -44,6 +44,14 @@ class PurchaseController extends Controller
         'details' => 'Verifique as informacoes do cartao de credito.'
       ], 400);
 
+    if (!$this->purchaseProvider->validateStock($values['product_id'], $values['quantity_purchased']))
+      return Response::json([
+        'message' => 'Erro nos dados enviados',
+        'details' => 'O produto nao existe ou nao ha quantidade suficiente.'
+      ]);
+
+
+    $this->productProvider->decreaseStock($values['product_id'], $values['quantity_purchased']);
 
     return $this->purchaseProvider->save($values);
   }

@@ -36,6 +36,23 @@ class ProductProvider
   }
 
   /**
+   * Faz o decremento da quantidade vendida
+   */
+  public function decreaseStock(int $product_id, int $qty_stock)
+  {
+
+    $product = $this->findOne($product_id);
+
+    if (!$product) return null;
+
+    $product->qty_stock  = $product->qty_stock - $qty_stock;
+
+    $product->save();
+
+    return $product;
+  }
+
+  /**
    * Faz a pesquisa de um produto pelo seu id
    */
   public function findOne(int $id): ?Product

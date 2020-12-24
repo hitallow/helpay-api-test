@@ -3,6 +3,7 @@
 namespace App\Providers\Purchase;
 
 use App\Models\Purchase;
+use App\Providers\Product\ProductProvider;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Validator;
  */
 class PurchaseProvider
 {
+  private ProductProvider $productProvider;
+
+
+  function __construct()
+  {
+    $this->productProvider = new ProductProvider();
+  }
   /**
    * Valida o input de uma compra
    */
@@ -61,6 +69,20 @@ class PurchaseProvider
       $cardValidate = $regexCreditCards[$cardFlag];
       return preg_match($cardValidate['valid'], $cardNumber);
     }
+
+    return false;
+  }
+
+  /**
+   * Valida se o produto tem estoque suficiente para finalizar a venda
+   */
+  public function validateStock($productId, $quantity): bool
+  {
+
+    $product = $this->productProvider->findOne($productId);
+
+    if ($product)
+      return $product->qty_stock >= $quantity;
 
     return false;
   }
