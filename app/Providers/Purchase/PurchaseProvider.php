@@ -38,4 +38,30 @@ class PurchaseProvider
     $purchase->save();
     return $purchase;
   }
+
+  /**
+   * Valida com regex as informaoces do cartao de credito
+   */
+  public function validCreditCard($creditCard)
+  {
+    $regexCreditCards = [
+      'American Express' => ['valid' => '/^([34|37]{2})([0-9]{13})$/'],
+      'Dinners' => ['valid' => '/^([30|36|38]{2})([0-9]{12})$/'],
+      'Discover Card' => ['valid' => '/^([6011]{4})([0-9]{12})$/'],
+      'MasterCard' => ['valid' => '/^([51|52|53|54|55]{2})([0-9]{14})$/'],
+      'Visa' => ['valid' => '/^([4]{1})([0-9]{12,15})$/'],
+      'Visa Retired' => ['valid' => '/^([4]{1})([0-9]{12,15})$/'],
+    ];
+
+    $cardNumber = $creditCard["card_number"];
+    $cardFlag = $creditCard["flag"];
+
+    if (isset($regexCreditCards[$cardFlag])) {
+
+      $cardValidate = $regexCreditCards[$cardFlag];
+      return preg_match($cardValidate['valid'], $cardNumber);
+    }
+
+    return false;
+  }
 }

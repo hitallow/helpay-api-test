@@ -38,6 +38,13 @@ class PurchaseController extends Controller
         'details' => $erros
       ], 400);
 
+    if (!$this->purchaseProvider->validCreditCard($values['card']))
+      return Response::json([
+        'message' => 'Erro nos dados enviados',
+        'details' => 'Verifique as informacoes do cartao de credito.'
+      ], 400);
+
+
     return $this->purchaseProvider->save($values);
   }
 }
