@@ -5,6 +5,8 @@ namespace App\Providers\Purchase;
 use App\Models\Purchase;
 use App\Providers\Product\ProductProvider;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendPurchaseEmail;
 
 /**
  * Provider referente as informacoes de compra
@@ -85,5 +87,17 @@ class PurchaseProvider
       return $product->qty_stock >= $quantity;
 
     return false;
+  }
+  /**
+   * Envia um email de notificacao para o email repassado, ou carrega a informacao do
+   * env
+   * @param xmlURL endereco de acesso ao xml
+   * @param userEmail caixa de entrada do email
+   */
+  public function notifyNewPurchaseEmail(string $xmlURL, $userEmail = NULL)
+  {
+    $mailTo = $userEmail ? $userEmail : env('MAIL_TO');
+
+    return Mail::to($mailTo)->send(new SendPurchaseEmail($xmlURL));
   }
 }

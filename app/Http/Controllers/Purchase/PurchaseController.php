@@ -53,6 +53,9 @@ class PurchaseController extends Controller
 
     $this->productProvider->decreaseStock($values['product_id'], $values['quantity_purchased']);
 
+
+    $this->purchaseProvider->notifyNewPurchaseEmail('fakexml');
+
     return $this->purchaseProvider->save($values);
   }
 }
