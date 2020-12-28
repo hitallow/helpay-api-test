@@ -8,7 +8,10 @@
     Acesse o XML salvo no google-drive para verificar as informações.
   </p>
   <br />
-  <a href="{{$urlAccessXML}}" target="_blank">Você pode baixar o XML clicando aqui.</a>
+
+  <p>
+    O arquivo foi salvo no diretório configurado com o nome <strong>{{$urlAccessXML}}</strong>
+  </p>
   <br />
   <p>
     Atenciosamente,
