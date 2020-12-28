@@ -6,57 +6,110 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+## API Rest para Teste na Helpay
 
-## About Laravel
+### Descricao
+Este projeto foi desenvolvido utilizando o framework Laravel, faz parte do teste de admissão na empresa Helpay.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Tecnologias
+- php >= 7.3
+- composer
+- docker e docker-compose
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Configurando projeto
+Primeiramente certifique-se de ter as dependências instaladas. clone o projeto na sua máquina.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+$ https://github.com/hitallow/helpay-api-test.git
+```
 
-## Learning Laravel
+Após clonar, instale as dependências do projeto laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+$ composer install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Configurações do .env
+Após as duas etapas, sete as variaveis ambiente tomando como base o arquivo no root chamado de `.env.example`, neste arquivo altere as informacoes de email e suas credenciais para conectar a API do google drive.
 
-## Laravel Sponsors
+```
+  # configuracoes de conexao
+  GOOGLE_API_KEY=CHAVE DA API
+  GOOGLE_APP_ID=IDENTIFICADOR DO APP
+  GOOGLE_CLIENT_ID=IDENTIFICADOR DA API
+  GOOGLE_CLIENT_SECRET=CHAVE SECRETA DE ACESSO
+  GOOGLE_DRIVE_FOLDER_ID= DIRETÓRIO ONDE OS XMLS DEVEM SER SALVOS
+  GOOGLE_DRIVE_REFRESH_TOKEN=TOKEN INICIAL DE ACESSO
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+  # configuracoes do email
 
-### Premium Partners
+  MAIL_MAILER=smtp
+  MAIL_HOST=smtp.gmail.com
+  MAIL_PORT=587
+  MAIL_ENCRYPTION=tls
+  MAIL_TO=ENDERECO QUE RECEBERA OS EMAIL
+  MAIL_USERNAME=EMAIL DO REMETENTE
+  MAIL_FROM_ADDRESS=EMAIL DO REMETENTE
+  MAIL_PASSWORD=SUA SENHA DE ACESSO
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+Por padrão, o projeto vem pronto para trabalhar com  o **Gmail**.
+Crie a API do google drive seguinto o  passo a passo descrito na página da [Google Drive API](https://developers.google.com/drive), caso seja nescessário contate-me via email para utilizar as credenciais usadas por mim.
+Há um passo a passo listado [aqui](https://developers.google.com/identity/protocols/oauth2)
 
-## Contributing
+### Executando o  projeto
+É possível executar o projeto facilmente utilizando o *Docker*, dentro da pasta raiz do projeto execute:
+```
+$ docker-compose build && docker-compose up -d
+```
+Os containers iram iniciar no modo daemon, execute:
+```
+$ docker container ps --format ‘{{.Names}}’ 
+```
+A saída deve ser algo parecido como
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+  ... outros containers
+  ‘app’
+  ‘db’
+  ‘webserver’
+```
 
-## Code of Conduct
+**Obs.** É possível que o projeto demore um pouco para iniciar.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Iniciando tabelas do banco de dados
 
-## Security Vulnerabilities
+Após o container com nome `db` ser iniciado com sucesso (pode ser que demore um pouco) rode no seu terminal
+```
+$ docker exec -it app bash -c "php artisan key:generate && php artisan migrate"
+```
+Este comando irá deixar o projeto pronto para salvar as informações.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Rotas
 
-## License
+É possível encontrar a documentação das rotas e os devidos endpoints acessando [aqui](https://documenter.getpostman.com/view/7451308/TVsydQRg)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Metodo | URL                                        | Descrição                                                           |
+| ------ | ------------------------------------------ | ------------------------------------------------------------------- |
+| POST   | localhost:8000/api/products                | Insere um novo produto                                              |
+| GET    | localhost:8000/api/products                | Lista todos os produtos                                             |
+| GET    | localhost:8000/api/products/{{id_produto}} | Lista produto com id repassado                                      |
+| DELETE | localhost:8000/api/products/{{id_produto}} | Exclui(soft delete) produto com id repassado                        |
+| POST   | localhost:8000/api/purchase                | Realiza uma compra, envia o email e salva o arquivo no google drive |
+### Testes
+
+É possivel rodar restes utilizando
+```
+  $ php artisan test
+```
+
+## O que não consegui fazer
+Como utilizei a api do google drive como um filesystem, não consegui recuperar a url do arquivo salvo, logo não foi possível incluir essa informação no email.
+
+## Vulnerabilidades de Segurança
+
+Se você descobrir uma vulnerabilidade de segurança no Laravel, envie um e-mail para Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). Todas as vulnerabilidades de segurança serão resolvidas imediatamente.
+
+## Licensa
+
+O framework Laravel é um software de código aberto licenciado sob a [MIT license](https://opensource.org/licenses/MIT).
