@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Purchase;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Providers\Product\ProductProvider;
-use App\Providers\Purchase\PurchaseProvider;
-use App\Providers\XML\XMLProvider;
+
+
 use App\Services\GoogleDrive\GoogleDriveService;
+use App\Services\Product\ProductProvider;
+use App\Services\Purchase\PurchaseProvider;
+use App\Services\XML\XMLProvider;
 use Illuminate\Support\Facades\Response;
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers\XML;
+namespace App\Services\XML;
 
 use SimpleXMLElement;
 

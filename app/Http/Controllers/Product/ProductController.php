@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
-use App\Providers\Product\ProductProvider;
+use App\Services\Product\ProductProvider;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Response;

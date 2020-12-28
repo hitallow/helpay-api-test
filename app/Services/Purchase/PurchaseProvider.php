@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Providers\Purchase;
+namespace App\Services\Purchase;
 
 use App\Models\Purchase;
-use App\Providers\Product\ProductProvider;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendPurchaseEmail;
+use App\Services\Product\ProductProvider;
 
 /**
  * Provider referente as informacoes de compra
