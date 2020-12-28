@@ -1,24 +1,28 @@
 <?php
 
-
 namespace App\Http\Controllers\Purchase;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\Product\ProductProvider;
 use App\Providers\Purchase\PurchaseProvider;
+use App\Providers\XML\XMLProvider;
+use App\Services\GoogleDrive\GoogleDriveService;
 use Illuminate\Support\Facades\Response;
+
 
 class PurchaseController extends Controller
 {
 
   private $purchaseProvider;
   private $productProvider;
+  private GoogleDriveService $googleDriveService;
 
   public function __construct()
   {
     $this->purchaseProvider = new PurchaseProvider();
     $this->productProvider = new ProductProvider();
+    $this->googleDriveService = new GoogleDriveService();
   }
   /**
    * Executa uma nova compra
@@ -47,14 +51,28 @@ class PurchaseController extends Controller
     if (!$this->purchaseProvider->validateStock($values['product_id'], $values['quantity_purchased']))
       return Response::json([
         'message' => 'Erro nos dados enviados',
-        'details' => 'O produto nao existe ou nao ha quantidade suficiente.'
+        'details' => 'O produto não existe ou não há quantidade suficiente.'
       ]);
 
 
     $this->productProvider->decreaseStock($values['product_id'], $values['quantity_purchased']);
 
+    $xml = XMLProvider::createPurchaseXML($values);
 
-    $this->purchaseProvider->notifyNewPurchaseEmail('fakexml');
+
+    $fileName = uniqid('xml-') . '.xml';
+
+
+    if (!$this->googleDriveService->sendFile($xml, $fileName))
+      return Response::json(
+        [
+          'message' => 'Erro no servidor',
+          'details' => 'Não foi possível salvar o xml no drive.'
+        ],
+        500
+      );
+
+    $this->purchaseProvider->notifyNewPurchaseEmail($fileName);
 
     return $this->purchaseProvider->save($values);
   }
